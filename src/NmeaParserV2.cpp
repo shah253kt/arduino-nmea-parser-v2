@@ -9,7 +9,7 @@ NmeaParserV2::NmeaParserV2(Stream &stream)
 NmeaParserV2::~NmeaParserV2()
 {
 	delete[] fields;
-	delete[] rawMessage;
+	delete[] rawStatement;
 	delete[] hexString;
 }
 
@@ -36,7 +36,7 @@ bool NmeaParserV2::encode(char c)
 		currentFieldIndex = 0;
 		currentRawIndex = 0;
 		checksum = 0;
-		rawMessage[0] = '\0';
+		rawStatement[0] = '\0';
 	}
 	else if (c == ',')
 	{
@@ -63,10 +63,10 @@ bool NmeaParserV2::encode(char c)
 		appendField(c);
 	}
 
-	if (currentRawIndex < NmeaParserV2_MAX_RAW_MESSAGE_LENGTH)
+	if (currentRawIndex < NmeaParserV2_MAX_RAW_STATEMENT_LENGTH)
 	{
-		rawMessage[currentRawIndex] = c;
-		rawMessage[++currentRawIndex] = '\0';
+		rawStatement[currentRawIndex] = c;
+		rawStatement[++currentRawIndex] = '\0';
 	}
 
 	return isValid;
@@ -117,7 +117,7 @@ char *NmeaParserV2::getField(byte index)
 	return "";
 }
 
-char *NmeaParserV2::getRawMessage()
+char *NmeaParserV2::getRawStatement()
 {
-	return rawMessage;
+	return rawStatement;
 }

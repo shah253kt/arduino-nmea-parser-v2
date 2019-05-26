@@ -25,12 +25,12 @@
 #define NmeaParserV2_MAX_FIELD_LENGTH 15
 #endif
 
-#ifndef NmeaParserV2_MAX_RAW_MESSAGE_LENGTH
-#define NmeaParserV2_MAX_RAW_MESSAGE_LENGTH ((NmeaParserV2_MAX_FIELD_COUNT * NmeaParserV2_MAX_FIELD_LENGTH) + NmeaParserV2_MAX_FIELD_COUNT + 6)
+#ifndef NmeaParserV2_MAX_RAW_STATEMENT_LENGTH
+#define NmeaParserV2_MAX_RAW_STATEMENT_LENGTH ((NmeaParserV2_MAX_FIELD_COUNT * NmeaParserV2_MAX_FIELD_LENGTH) + NmeaParserV2_MAX_FIELD_COUNT + 6)
 #endif
 
-#ifndef NmeaParserV2_MAX_SEND_MESSAGE_LENGTH
-#define NmeaParserV2_MAX_SEND_MESSAGE_LENGTH 20
+#ifndef NmeaParserV2_MAX_SEND_STATEMENT_LENGTH
+#define NmeaParserV2_MAX_SEND_STATEMENT_LENGTH 20
 #endif
 
 #ifndef stricmp
@@ -45,7 +45,7 @@ private:
 	Stream *_stream;
 	char c;
 	char fields[NmeaParserV2_MAX_FIELD_COUNT][NmeaParserV2_MAX_FIELD_LENGTH];
-	char rawMessage[NmeaParserV2_MAX_RAW_MESSAGE_LENGTH + 1];
+	char rawStatement[NmeaParserV2_MAX_RAW_STATEMENT_LENGTH + 1];
 	char hexString[3], buffer[3];
 	byte currentFieldCountIndex, currentFieldIndex, currentRawIndex, checksum;
 	bool isChecksumField, isValid;
@@ -60,16 +60,25 @@ public:
 	~NmeaParserV2();
 
 	/**
-	 * Reads all available serial bytes until a packet is parsed, an error occurs, or the buffer is empty.
-	 * Returns true if packet is valid.
+	 * Reads all available serial bytes until a statement is parsed or the buffer is empty.
+	 * Returns true if statement is valid.
 	 */
 	bool valid();
 
+	/**
+	 * Returns number of fields parsed.
+	 */
 	byte getFieldCount();
 
+	/**
+	 * Returns a field.
+	 */
 	char *getField(byte index);
 
-	char *getRawMessage();
+	/**
+	 * Returns a raw NMEA statement.
+	 */
+	char *getRawStatement();
 
 	// template <typename T>
 	// bool append(T item)
