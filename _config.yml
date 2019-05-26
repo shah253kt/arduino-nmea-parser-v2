@@ -1,4 +1,4 @@
 theme: jekyll-theme-cayman
-title: [NMEA Parser V2]
-description: [Easily parse NMEA statement using this library.]
-show_downloads: ["true"]
+title: NMEA Parser V2
+description: Easily parse NMEA statement using this library.
+show_downloads: true
