@@ -27,7 +27,18 @@ To use the library:
     NmeaParserV2 parser(ss);
     ```
 
-4. Check if any valid NMEA statement is available to be processed:
+4. Open stream:
+
+    ```cpp
+    void setup() {
+        // Make sure you are using the correct baud rate
+
+        Serial1.begin(9600); // If you are using hardware serial
+        ss.begin(9600); // If you are using SoftwareSerial
+    }
+    ```
+
+5. Check if any valid NMEA statement is available to be processed:
     ```cpp
     void loop() {
         if(parser.valid()) {
@@ -40,7 +51,7 @@ To use the library:
 
 * `bool valid()`
     
-    Reads all available serial bytes until a statement is parsed or the buffer is empty. Returns true if statement is valid.
+    Reads all available serial bytes until a statement is parsed or the buffer is empty. Returns `true` if statement is valid.
 
 * `byte getFieldCount()`
     
@@ -60,11 +71,11 @@ To use the library:
 
 `NmeaParserV2_MAX_FIELD_COUNT` (default: 16)
 
-This value determines maximum number of fields in an NMEA statement.
+This value determines maximum number of fields in an NMEA statement. Should be a value between 1 and 255 inclusive.
 
 `NmeaParserV2_MAX_FIELD_LENGTH` (default: 15)
 
-This value determines maximum character length in each field.
+This value determines maximum character length in each field. Should be a value between 1 and 255 inclusive.
 
 ## Others
 
@@ -75,7 +86,8 @@ Basically, you need to increase the buffer size of the streams.
 For SoftwareSerial, modify the following file:
 
     ```cpp
-    //<Arduino installation folder>\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h and modify the following line:
+    // <Arduino installation folder>\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h
+    // and modify the following line:
 
     #define _SS_MAX_RX_BUFF 64 // From this
     #define _SS_MAX_RX_BUFF 256 // To this
@@ -84,10 +96,11 @@ For SoftwareSerial, modify the following file:
 For HardwareSerial, modify the following file:
 
     ```cpp
-    //<Arduino installation folder>\hardware\arduino\avr\cores\arduino\HardwareSerial.h and modify the following line:
+    // <Arduino installation folder>\hardware\arduino\avr\cores\arduino\HardwareSerial.h
+    // and modify the following line:
 
     #define SERIAL_TX_BUFFER_SIZE 64 // From this
     #define SERIAL_TX_BUFFER_SIZE 256 // To this
     ```
 
-However, please note that by increasing those values, you are also increasing the SRAM used by the Arduino, limiting the available memory for your sketch.
+**However**, please note that by increasing those values, you are also increasing the SRAM used by the Arduino, limiting the available memory for your sketch.
