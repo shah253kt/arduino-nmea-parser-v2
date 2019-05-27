@@ -49,3 +49,35 @@ To use the library:
 
 * `char *getRawStatement()`
     Returns a raw NMEA statement.
+
+## Constants
+
+*You may modify the following constants if you need to, but remember that this will also increase memory usage quite significantly.*
+
+`NmeaParserV2_MAX_FIELD_COUNT` (default: 16)
+This value determines maximum number of fields in an NMEA statement.
+
+`NmeaParserV2_MAX_FIELD_LENGTH` (default: 15)
+This value determines maximum character length in each field.
+
+## Others
+
+Please note that both hardware and software serial suffers from inadequate buffer size when dealing with fast data transmission or large amount of data to be processed. If you are not getting valid NMEA statement, try to increase the serial buffer size. [Refer this page](https://internetofhomethings.com/homethings/?p=927) for more information.
+
+Basically, you need to increase the buffer size of the streams.
+
+For SoftwareSerial, modify the following file:
+    *<Arduino installation folder>\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h* and modify the following line:
+    ```cpp
+    #define _SS_MAX_RX_BUFF 64 // From this
+    #define _SS_MAX_RX_BUFF 256 // To this
+    ```
+
+For HardwareSerial, modify the following file:
+    *<Arduino installation folder>\hardware\arduino\avr\cores\arduino\HardwareSerial.h* and modify the following line:
+    ```cpp
+    #define SERIAL_TX_BUFFER_SIZE 64 // From this
+    #define SERIAL_TX_BUFFER_SIZE 256 // To this
+    ```
+
+However, please note that by increasing those values, you are also increasing the SRAM used by the Arduino, limiting the available memory for your sketch.
