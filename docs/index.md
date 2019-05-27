@@ -39,15 +39,19 @@ To use the library:
 ## API
 
 * `bool valid()`
+    
     Reads all available serial bytes until a statement is parsed or the buffer is empty. Returns true if statement is valid.
 
 * `byte getFieldCount()`
+    
     Returns number of fields parsed.
 
 * `char *getField(byte index)`
+    
     Returns a field.
 
 * `char *getRawStatement()`
+    
     Returns a raw NMEA statement.
 
 ## Constants
@@ -55,9 +59,11 @@ To use the library:
 *You may modify the following constants if you need to, but remember that this will also increase memory usage quite significantly.*
 
 `NmeaParserV2_MAX_FIELD_COUNT` (default: 16)
+
 This value determines maximum number of fields in an NMEA statement.
 
 `NmeaParserV2_MAX_FIELD_LENGTH` (default: 15)
+
 This value determines maximum character length in each field.
 
 ## Others
@@ -67,15 +73,19 @@ Please note that both hardware and software serial suffers from inadequate buffe
 Basically, you need to increase the buffer size of the streams.
 
 For SoftwareSerial, modify the following file:
-    *<Arduino installation folder>\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h* and modify the following line:
+
     ```cpp
+    //<Arduino installation folder>\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h and modify the following line:
+
     #define _SS_MAX_RX_BUFF 64 // From this
     #define _SS_MAX_RX_BUFF 256 // To this
     ```
 
 For HardwareSerial, modify the following file:
-    *<Arduino installation folder>\hardware\arduino\avr\cores\arduino\HardwareSerial.h* and modify the following line:
+
     ```cpp
+    //<Arduino installation folder>\hardware\arduino\avr\cores\arduino\HardwareSerial.h and modify the following line:
+
     #define SERIAL_TX_BUFFER_SIZE 64 // From this
     #define SERIAL_TX_BUFFER_SIZE 256 // To this
     ```
