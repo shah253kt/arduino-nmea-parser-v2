@@ -1,4 +1,4 @@
 theme: jekyll-theme-cayman
-title: NMEA Parser V2
+title: Arduino NMEA Parser V2
 description: Validate and extract fields in NMEA statement.
 show_downloads: "true"
