@@ -1,6 +1,11 @@
 # Arduino NMEA Parser
 
-*Arduino NMEA Parser is a library created to simplify the process of verifying and extracting all fields in an NMEA 0183 statement being transmitted through a serial stream.*
+*According to Wikipedia,*
+
+> NMEA 0183 is a combined electrical and data specification for communication between marine electronics such as echo sounder, sonars, anemometer, gyrocompass, autopilot, GPS receivers and many other types of instruments. It has been defined by, and is controlled by, the National Marine Electronics Association.
+> (Wikipedia)[https://en.wikipedia.org/wiki/NMEA_0183]
+
+*NMEA 0183 is simple to use and quite robust communication standard as we can verify the integrity of a message using checksum. Arduino NMEA Parser is a library created to simplify the process of verifying and extracting all fields in an NMEA 0183 statement being transmitted through a serial stream. Thus, enabling you to send and receive non-standard NMEA sentences. For example, you can send and receive sensor data in NMEA 0183 format and let this library handles verification part of it.*
 
 ## Usage
 
