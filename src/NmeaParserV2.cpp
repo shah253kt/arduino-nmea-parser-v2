@@ -63,7 +63,7 @@ bool NmeaParserV2::encode(char c)
 		appendField(c);
 	}
 
-	if (currentRawIndex < NmeaParserV2_MAX_RAW_STATEMENT_LENGTH)
+	if (currentRawIndex < NmeaParserV2_MAX_RAW_STATEMENT_LENGTH && c != '\r' && c != '\n')
 	{
 		rawStatement[currentRawIndex] = c;
 		rawStatement[++currentRawIndex] = '\0';

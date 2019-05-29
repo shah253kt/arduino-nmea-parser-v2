@@ -34,7 +34,7 @@ void loop()
 {
 	if (parser.valid())
 	{
-		if(strcmp(parser.getField(0), "GPGGA")) {
+		if(strcmp(parser.getField(0), "GPGGA") == 0) {
 			Serial.println(parser.getRawStatement());
 
 			// You may use char array functions like strcmp, strcpy, atoi, atof, etc. to process the value of each field.
