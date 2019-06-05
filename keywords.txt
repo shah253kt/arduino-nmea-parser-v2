@@ -8,6 +8,7 @@ valid	KEYWORD2
 getFieldCount	KEYWORD2
 getField	KEYWORD2
 getRawMessage	KEYWORD2
+prepareStatement	KEYWORD2
 append	KEYWORD2
 send	KEYWORD2
 

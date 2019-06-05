@@ -69,6 +69,38 @@ To use the library:
     
     Returns a raw NMEA statement.
 
+* `char prepareStatement()`
+
+    Resets the statement to be sent. Called once by the constructor and everytime `send` function is called.
+
+* `void append(char *cArray, byte length);`
+
+    An overloaded function to append data to the statement to be sent.
+    `cArray` is the char array to append to the the statement.
+    `length` is the length of the `cArray`.
+
+* `void append(int value);`
+
+    An overloaded function to append data to the statement to be sent.
+    `value` is the integer value to pass to the statement.
+
+* `void append(long value);`
+
+    An overloaded function to append data to the statement to be sent.
+    `value` is the long integer value to pass to the statement.
+
+* `void append(double value, byte totalLength, byte mantissaLength);`
+
+    An overloaded function to append data to the statement to be sent.
+    `value` is the double value to pass to the statement.
+    `totalLength` refers to the total length of a floating number including the decimal point and mantissa. Example: `totalLength` for 123.456 is 7.
+    `mantissaLength` refers to the length of the mantissa, the decimal places. Example: `mantissaLength` for 123.456 is 3.
+
+* `void send();`
+
+    Generate checksum and send the statement through stream channel. This function will automatically calls `prepareStatement` function.
+
+
 ## Constants
 
 *You may modify the following constants if you need to, but remember that this will also increase memory usage.*
@@ -80,6 +112,10 @@ This value determines maximum number of fields in an NMEA statement. Should be a
 `NmeaParserV2_MAX_FIELD_LENGTH` (default: 15)
 
 This value determines maximum character length in each field. Should be a value between 1 and 255 inclusive.
+
+`NmeaParserV2_MAX_SEND_STATEMENT_LENGTH` (default: 270)
+
+This value determines maximum character length in send statement.
 
 ## Others
 

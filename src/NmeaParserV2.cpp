@@ -4,6 +4,7 @@
 NmeaParserV2::NmeaParserV2(Stream &stream)
 {
 	_stream = &stream;
+	prepareStatement();
 }
 
 NmeaParserV2::~NmeaParserV2()
@@ -46,7 +47,8 @@ bool NmeaParserV2::encode(char c)
 	{
 		isValid = strtol(&rawStatement[checksumIndex], NULL, 16) == calculatedChecksum && !isValid;
 
-		if(isValid) {
+		if (isValid)
+		{
 			nextField();
 		}
 	}
@@ -97,4 +99,92 @@ char *NmeaParserV2::getField(byte index)
 char *NmeaParserV2::getRawStatement()
 {
 	return rawStatement;
+}
+
+// For sentence encoding
+
+void NmeaParserV2::prepareStatement()
+{
+	strcpy(statementToSend, "$\0");
+	sendStatementChecksum = 0;
+	currentSendStatementIndex = 1;
+}
+
+void NmeaParserV2::append(char *cArray, byte length)
+{
+	insertComma();
+
+	for (byte i = 0; i < length; i++)
+	{
+		sendStatementChecksum ^= cArray[i];
+		statementToSend[currentSendStatementIndex++] = cArray[i];
+	}
+}
+
+void NmeaParserV2::append(int value)
+{
+	append((long) value);
+}
+
+void NmeaParserV2::append(long value)
+{
+	insertComma();
+	itoa(value, buffer, 10);
+	scanBuffer();
+}
+
+void NmeaParserV2::append(double value, byte totalLength, byte mantissaLength)
+{
+	insertComma();
+	dtostrf(value, totalLength, mantissaLength, buffer);
+	scanBuffer();
+}
+
+void NmeaParserV2::send()
+{
+	statementToSend[currentSendStatementIndex++] = '*';
+	strncat(statementToSend, toHexString(sendStatementChecksum), 2);
+	_stream->println(statementToSend);
+	prepareStatement();
+}
+
+char *NmeaParserV2::toHexString(byte value)
+{
+	itoa(value, buffer, 16);
+
+	if (strlen(buffer) < 2)
+	{
+		strcpy(hexString, "0\0");
+	}
+	else
+	{
+		hexString[0] = '\0';
+	}
+
+	strncat(hexString, buffer, strlen(buffer));
+
+	for (byte i = 0; i < strlen(hexString); i++)
+	{
+		hexString[i] = toupper(hexString[i]);
+	}
+
+	return hexString;
+}
+
+void NmeaParserV2::insertComma()
+{
+	if (currentSendStatementIndex > 1)
+	{
+		sendStatementChecksum ^= ',';
+		statementToSend[currentSendStatementIndex++] = ',';
+	}
+}
+
+void NmeaParserV2::scanBuffer()
+{
+	for (byte i = 0; i < strlen(buffer); i++)
+	{
+		sendStatementChecksum ^= buffer[i];
+		statementToSend[currentSendStatementIndex++] = buffer[i];
+	}
 }

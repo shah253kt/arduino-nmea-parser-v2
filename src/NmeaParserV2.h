@@ -43,6 +43,8 @@ class NmeaParserV2
 {
 private:
 	Stream *_stream;
+
+	// For sentence decoding
 	byte fieldIndexes[NmeaParserV2_MAX_FIELD_COUNT];
 	char rawStatement[NmeaParserV2_MAX_RAW_STATEMENT_LENGTH];
 	char field[NmeaParserV2_MAX_FIELD_LENGTH];
@@ -53,6 +55,15 @@ private:
 	bool encode(char c);
 	void appendField(char c);
 	void nextField();
+
+	// For sentence encoding
+	char statementToSend[NmeaParserV2_MAX_SEND_STATEMENT_LENGTH];
+	byte sendStatementChecksum, currentSendStatementIndex;
+	char hexString[3], buffer[NmeaParserV2_MAX_FIELD_LENGTH];
+	
+	char *toHexString(byte value);
+	void insertComma();
+	void scanBuffer();
 
 public:
 	NmeaParserV2(Stream &stream);
@@ -79,13 +90,14 @@ public:
 	 */
 	char *getRawStatement();
 
-	// template <typename T>
-	// bool append(T item)
-	// {
-	// 	return false;
-	// }
+	void prepareStatement();
 
-	// void send();
+	void append(char *cArray, byte length);
+	void append(int value);
+	void append(long value);
+	void append(double value, byte totalLength, byte mantissaLength);
+
+	void send();
 };
 
 #endif
