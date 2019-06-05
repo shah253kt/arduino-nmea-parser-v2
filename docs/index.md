@@ -71,9 +71,9 @@ To use the library:
 
 ## Constants
 
-*You may modify the following constants if you need to, but remember that this will also increase memory usage quite significantly.*
+*You may modify the following constants if you need to, but remember that this will also increase memory usage.*
 
-`NmeaParserV2_MAX_FIELD_COUNT` (default: 16)
+`NmeaParserV2_MAX_FIELD_COUNT` (default: 20)
 
 This value determines maximum number of fields in an NMEA statement. Should be a value between 1 and 255 inclusive.
 

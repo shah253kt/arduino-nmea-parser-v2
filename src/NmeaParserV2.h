@@ -4,13 +4,13 @@
 /**
  * This value determines maximum number of fields in an NMEA statement.
  * Most standard NMEA statement has less than 16 fields, so this default value is more than enough.
- * If you really need to reduce memory usage or has NMEA statements that has more than 16 fields,
+ * If you really need to reduce memory usage or has NMEA statements that has more than 20 fields,
  * you may overwrite this value.
  * Valid values: 1 to 255 (inclusive)
- * Default value: 16
+ * Default value: 20
  */
 #ifndef NmeaParserV2_MAX_FIELD_COUNT
-#define NmeaParserV2_MAX_FIELD_COUNT 16
+#define NmeaParserV2_MAX_FIELD_COUNT 20
 #endif
 
 /**
@@ -26,11 +26,11 @@
 #endif
 
 #ifndef NmeaParserV2_MAX_RAW_STATEMENT_LENGTH
-#define NmeaParserV2_MAX_RAW_STATEMENT_LENGTH ((NmeaParserV2_MAX_FIELD_COUNT * NmeaParserV2_MAX_FIELD_LENGTH) + NmeaParserV2_MAX_FIELD_COUNT + 6)
+#define NmeaParserV2_MAX_RAW_STATEMENT_LENGTH 270
 #endif
 
 #ifndef NmeaParserV2_MAX_SEND_STATEMENT_LENGTH
-#define NmeaParserV2_MAX_SEND_STATEMENT_LENGTH 20
+#define NmeaParserV2_MAX_SEND_STATEMENT_LENGTH 270
 #endif
 
 #ifndef stricmp
@@ -43,17 +43,16 @@ class NmeaParserV2
 {
 private:
 	Stream *_stream;
-	char c;
-	char fields[NmeaParserV2_MAX_FIELD_COUNT][NmeaParserV2_MAX_FIELD_LENGTH];
-	char rawStatement[NmeaParserV2_MAX_RAW_STATEMENT_LENGTH + 1];
-	char hexString[3], buffer[3];
-	byte currentFieldCountIndex, currentFieldIndex, currentRawIndex, checksum;
-	bool isChecksumField, isValid;
+	byte fieldIndexes[NmeaParserV2_MAX_FIELD_COUNT];
+	char rawStatement[NmeaParserV2_MAX_RAW_STATEMENT_LENGTH];
+	char field[NmeaParserV2_MAX_FIELD_LENGTH];
+	byte currentFieldCount, currentRawIndex, calculatedChecksum, checksumIndex;
+	bool isValid;
+	size_t bytesCount;
 
 	bool encode(char c);
 	void appendField(char c);
 	void nextField();
-	char *toHexString(byte value);
 
 public:
 	NmeaParserV2(Stream &stream);

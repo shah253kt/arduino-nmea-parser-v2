@@ -8,9 +8,8 @@ NmeaParserV2::NmeaParserV2(Stream &stream)
 
 NmeaParserV2::~NmeaParserV2()
 {
-	delete[] fields;
 	delete[] rawStatement;
-	delete[] hexString;
+	delete[] field;
 }
 
 bool NmeaParserV2::valid()
@@ -30,39 +29,38 @@ bool NmeaParserV2::encode(char c)
 {
 	if (c == '$')
 	{
-		isChecksumField = false;
 		isValid = false;
-		currentFieldCountIndex = 0;
-		currentFieldIndex = 0;
+		currentFieldCount = 0;
 		currentRawIndex = 0;
-		checksum = 0;
+		calculatedChecksum = 0;
+		checksumIndex = 0;
 		rawStatement[0] = '\0';
+		nextField();
 	}
 	else if (c == ',')
 	{
-		checksum ^= c;
+		calculatedChecksum ^= c;
 		nextField();
 	}
 	else if (c == '\r' || c == '\n')
 	{
-		isValid = stricmp(toHexString(checksum), fields[currentFieldCountIndex]) == 0 && !isValid;
-		isChecksumField = false;
-	}
-	else if (isChecksumField)
-	{
-		appendField(c);
+		isValid = strtol(&rawStatement[checksumIndex], NULL, 16) == calculatedChecksum && !isValid;
+
+		if(isValid) {
+			nextField();
+		}
 	}
 	else if (c == '*')
 	{
-		isChecksumField = true;
 		nextField();
+		checksumIndex = currentRawIndex + 1;
 	}
-	else
+	else if (checksumIndex == 0)
 	{
-		checksum ^= c;
-		appendField(c);
+		calculatedChecksum ^= c;
 	}
 
+	// Copy into raw statement char array
 	if (currentRawIndex < NmeaParserV2_MAX_RAW_STATEMENT_LENGTH && c != '\r' && c != '\n')
 	{
 		rawStatement[currentRawIndex] = c;
@@ -72,46 +70,25 @@ bool NmeaParserV2::encode(char c)
 	return isValid;
 }
 
-void NmeaParserV2::appendField(char c)
-{
-	fields[currentFieldCountIndex][currentFieldIndex] = c;
-	fields[currentFieldCountIndex][++currentFieldIndex] = '\0';
-}
-
 void NmeaParserV2::nextField()
 {
-	fields[currentFieldCountIndex++][currentFieldIndex] = '\0'; // Terminate current field
-	currentFieldIndex = 0;
-}
-
-char *NmeaParserV2::toHexString(byte value)
-{
-	itoa(value, buffer, 16);
-
-	if (strlen(buffer) < 2)
-	{
-		strcpy(hexString, "0\0");
-	}
-	else
-	{
-		hexString[0] = '\0';
-	}
-
-	strncat(hexString, buffer, strlen(buffer));
-
-	return hexString;
+	fieldIndexes[currentFieldCount++] = currentRawIndex + 1;
 }
 
 byte NmeaParserV2::getFieldCount()
 {
-	return currentFieldCountIndex + 1;
+	return currentFieldCount - 1;
 }
 
 char *NmeaParserV2::getField(byte index)
 {
-	if (index < NmeaParserV2_MAX_FIELD_COUNT)
+	if (index < getFieldCount())
 	{
-		return fields[index];
+		bytesCount = fieldIndexes[index + 1] - fieldIndexes[index] - 1;
+		strncpy(field, &rawStatement[fieldIndexes[index]], bytesCount);
+		field[bytesCount] = '\0';
+
+		return field;
 	}
 
 	return "";
