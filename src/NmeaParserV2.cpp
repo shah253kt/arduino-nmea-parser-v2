@@ -105,7 +105,8 @@ char *NmeaParserV2::getRawStatement()
 
 void NmeaParserV2::prepareStatement()
 {
-	strcpy(statementToSend, "$\0");
+	statementToSend[0] = '$';
+	statementToSend[1] = '\0';
 	sendStatementChecksum = 0;
 	currentSendStatementIndex = 1;
 }
@@ -142,8 +143,11 @@ void NmeaParserV2::append(double value, byte totalLength, byte mantissaLength)
 
 void NmeaParserV2::send()
 {
+	toHexString(sendStatementChecksum);
 	statementToSend[currentSendStatementIndex++] = '*';
-	strncat(statementToSend, toHexString(sendStatementChecksum), 2);
+	statementToSend[currentSendStatementIndex++] = hexString[0];
+	statementToSend[currentSendStatementIndex++] = hexString[1];
+	statementToSend[currentSendStatementIndex++] = '\0';
 	_stream->println(statementToSend);
 	prepareStatement();
 }
