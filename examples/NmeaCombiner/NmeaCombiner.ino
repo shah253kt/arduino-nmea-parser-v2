@@ -22,10 +22,7 @@
 #include <NmeaParserV2.h>
 
 SoftwareSerial ss(2, 3);
-NmeaParserV2 parser1(Serial1);
-NmeaParserV2 parser2(Serial2);
-NmeaParserV2 parser3(Serial3);
-NmeaParserV2 parser4(ss);
+NmeaParserV2 parser[] = {Serial1, Serial2, Serial3, ss};
 
 void setup()
 {
@@ -38,23 +35,10 @@ void setup()
 
 void loop()
 {
-	if (Serial1.valid())
-	{
-		Serial.println(Serial1.getRawStatement());
-	}
-	
-	if (Serial2.valid())
-	{
-		Serial.println(Serial2.getRawStatement());
-	}
-	
-	if (Serial3.valid())
-	{
-		Serial.println(Serial3.getRawStatement());
-	}
-	
-	if (ss.valid())
-	{
-		Serial.println(ss.getRawStatement());
-	}
+  for (byte i=0; i<4; i++) {
+    if (parser[i].valid())
+    {
+      Serial.println(parser[i].getRawStatement());
+    }
+  }
 }
